@@ -133,14 +133,10 @@ validation.
 
 Here are a couple of informative and useful sources you might want to check out.
 
-* Open Web Application Security Project (OWASP) —
-[https://www.owasp.org/](https://www.owasp.org/)
-* Open Sourced Vulnerability Database (OSVDB) —
-[https://osvdb.org/](https://osvdb.org/)
-* TestingSecurity.com —
-[http://www.testingsecurity.com/](http://www.testingsecurity.com/)
-* The importance of input validation, by Kevin Beaver —
-[http://searchsoftwarequality.techtarget.com/tip/The-importance-of-input-validation](http://searchsoftwarequality.techtarget.com/tip/The-importance-of-input-validation)
+* Open Web Application Security Project (OWASP) — [https://www.owasp.org/](https://www.owasp.org/)
+* Open Sourced Vulnerability Database (OSVDB) — [https://osvdb.org/](https://osvdb.org/)
+* TestingSecurity.com — [http://www.testingsecurity.com/](http://www.testingsecurity.com/)
+* The importance of input validation, by Kevin Beaver — [http://searchsoftwarequality.techtarget.com/tip/The-importance-of-input-validation](http://searchsoftwarequality.techtarget.com/tip/The-importance-of-input-validation)
 
 *****
 
@@ -169,15 +165,10 @@ requirements of the input data.
 
 * **Name (name and surname)**, Required field, Maximum length is 50 characters
 * **E-mail address**, Required field, Needs to validate as email address
-* **Password**, Required field, Requires at least one lower and one uppercase
-letter, one digit, no spaces and a length of 8–16 length, Must be same as repeat
-password
-* **Repeat password**, Required field, Requires at least one lower and one
-uppercase letter, one digit, no spaces and a length of 8–16 length, Must be same
-as password
+* **Password**, Required field, Requires at least one lower and one uppercase letter, one digit, no spaces and a length of 8–16 length, Must be same as repeat password
+* **Repeat password**, Required field, Requires at least one lower and one uppercase letter, one digit, no spaces and a length of 8–16 length, Must be same as password
 * **Birth-date**, Optional, Needs to validate as a proper date (mm/dd/yyyy)
-* **Personal website**, Optional, Must validate as a proper URL, Only http and
-https is allowed
+* **Personal website**, Optional, Must validate as a proper URL, Only http and https is allowed
 
 Very basic values of course, but good enough for the example throughout the
 client-side and server-side input validation coding. It is very important to
@@ -220,7 +211,8 @@ You don’t need to worry about older browsers, as they gracefully degrade to
 normal text fields. Down-side of this is that some or all controls might not
 work anymore. So there will be still a need for JavaScript.
 
-Example code client-side HTML: [https://gist.github.com/teusink/132d52260f81ab55baa9#file-form-html](https://gist.github.com/teusink/132d52260f81ab55baa9#file-form-html)
+**Example code client-side HTML**
+<script src="https://gist.github.com/teusink/132d52260f81ab55baa9.js?file=form.html"></script>
 
 ### 2.4 JavaScript Second
 
@@ -230,7 +222,8 @@ the form validation, there is the JavaScript validation and there will be the
 PHP (server sided) validation. You may not skip JavaScript if you think a
 browser will support the new form elements. Always include this step.
 
-Example code client-side JavaScript: [https://gist.github.com/teusink/132d52260f81ab55baa9#file-javascript-js](https://gist.github.com/teusink/132d52260f81ab55baa9#file-javascript-js)
+**Example code client-side JavaScript**
+<script src="https://gist.github.com/teusink/132d52260f81ab55baa9.js?file=javascript.js"></script>
 
 ### 2.5 Disclaimer concerning the code
 
@@ -246,14 +239,11 @@ input validation you need for the best security of your application.
 
 Here are a couple of informative and useful sources you might want to check out.
 
-* JavaScript Form validation:
-[http://www.w3schools.com/js/js_form_validation.asp](https://www.w3schools.com/js/js_form_validation.asp)
+* JavaScript Form validation: [http://www.w3schools.com/js/js_form_validation.asp](https://www.w3schools.com/js/js_form_validation.asp)
 * Regular Expressions 101: [https://regex101.com/](https://regex101.com/)
 * Regex Test: [http://regexpal.com/](http://regexpal.com/)
-* Regular Expressions Cheat Sheet by DaveChild:
-[http://www.cheatography.com/davechild/cheat-sheets/regular-expressions/](https://www.cheatography.com/davechild/cheat-sheets/regular-expressions/)
-* RegExLib.com Cheat Sheet:
-[http://regexlib.com/CheatSheet.aspx](http://regexlib.com/CheatSheet.aspx)
+* Regular Expressions Cheat Sheet by DaveChild: [http://www.cheatography.com/davechild/cheat-sheets/regular-expressions/](https://www.cheatography.com/davechild/cheat-sheets/regular-expressions/)
+* RegExLib.com Cheat Sheet: [http://regexlib.com/CheatSheet.aspx](http://regexlib.com/CheatSheet.aspx)
 * RegExLib.com: [http://regexlib.com/](http://regexlib.com/)
 
 *****
@@ -273,31 +263,7 @@ statistics of the data in your database. When a user of the system enters data
 in a wrong format, you can either automatically change it (sanitizing), or send
 a message to the user to enter it in the correct format.
 
-### 3.1 The Input Requirements
-
-In the previous post we used the example of requirements below. This example
-came in the form of a small register form with the most basic input values. The
-following input is requested from the user, including all the requirements of
-the input data and in this stage it is sent to the web server.
-
-* **Name (name and surname)**, Required field, Maximum length is 50 characters
-* **E-mail address**, Required field, Needs to validate as email address
-* **Password**, Required field, Requires at least one lower and one uppercase
-letter, one digit, no spaces and a length of 8–16 length, Must be same as repeat
-password
-* **Repeat password**, Required field, Requires at least one lower and one
-uppercase letter, one digit, no spaces and a length of 8–16 length, Must be same
-as password
-* **Birth-date**, Optional, Needs to validate as a proper date (mm/dd/yyyy)
-* **Personal website**, Optional, Must validate as a proper URL, Only http and
-https is allowed
-
-Very basic values of course, but good enough for the example throughout the
-client-side and server-side input validation coding. It is very important to
-first sit down with your co-workers about the requirements of the data, before
-actually start coding.
-
-### 3.2 Input validation Steps
+### 3.1 Input validation Steps
 
 For every step in the process we will look at what it might mean for JavaScript.
 Some steps will not be required at all, some optional and some definitely
@@ -313,7 +279,7 @@ required.
 1.  When relevant, check existence of local resources
 1.  And now is it input for the process
 
-### 3.3 Server-sided PHP
+### 3.2 Server-sided PHP
 
 The server-sided code for input validation can be found below. In this situation
 we use PHP and I will show two kinds of examples. One is the input validation
@@ -324,7 +290,8 @@ input validation errors by the client-side validation).
 
 That being said, all steps are explained in the code itself.
 
-Example code server-side PHP: [https://gist.github.com/teusink/132d52260f81ab55baa9#file-exampleserver-php](https://gist.github.com/teusink/132d52260f81ab55baa9#file-exampleserver-php)
+**Example code server-side PHP**
+<script src="https://gist.github.com/teusink/132d52260f81ab55baa9.js?file=exampleserver.php"></script>
 
 ### 3.4 All done now…
 
