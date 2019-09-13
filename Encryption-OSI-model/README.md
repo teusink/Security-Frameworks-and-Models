@@ -164,7 +164,7 @@ either stream-ciphers, or block-ciphers. Asymmetric encryption is either based
 on discreet logarithms or based on factoring the products of large primes. See
 the figure below which displays this schematically.
 
-![](https://rawgit.com/teusink/Security-Frameworks-and-Models/master/Encryption-OSI-model/Overview-of-Cryptographic-Systems.png)
+![](https://raw.githubusercontent.com/teusink/Security-Frameworks-and-Models/master/Encryption-OSI-model/Overview-of-Cryptographic-Systems.png)
 
 ### 2.3. Symmetric Encryption
 
@@ -331,7 +331,7 @@ image is released under the [Creative Commons Attribution-NoDerivatives 4.0
 International License](https://creativecommons.org/licenses/by-nd/4.0/), so
 please share it in every way you like.
 
-![](https://rawgit.com/teusink/Security-Frameworks-and-Models/master/Encryption-OSI-model/Encryption-OSI-model.png)
+![](https://raw.githubusercontent.com/teusink/Security-Frameworks-and-Models/master/Encryption-OSI-model/Encryption-OSI-model.png)
 
 **Model of Encryption techniques in context to data in transit, in process and at rest**
 
