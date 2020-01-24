@@ -118,15 +118,15 @@ and never ever ever trust user generated input. I cannot emphasize this enough
 vulnerabilities.
 
 You can do input validation on multiple levels. You can do input validation
-server-side, but also client-side. For example, when you have an online form
+back-end-side, but also front-end-side. For example, when you have an online form
 that users are filling in and sending it to your application, you can and you
-should do validation checks with every field a user fills in client-side. When
-the data is submitted, you perform a server-side input validation.
+should do validation checks with every field a user fills in front-end-side. When
+the data is submitted, you perform a back-end-side input validation.
 
 This improves the user experience in your application, and it contributes to the
-layered-defense principle. If the client-side defense layer fails (because the
+layered-defense principle. If the front-end-side defense layer fails (because the
 attacker is circumventing the form or regular ways of submitting input), you
-will have your second layer of defense ready, and that is the server-side input
+will have your second layer of defense ready, and that is the back-end-side input
 validation.
 
 ### 1.3 Sources
@@ -140,10 +140,10 @@ Here are a couple of informative and useful sources you might want to check out.
 
 *****
 
-## 2. Client-side
+## 2. Front-end-side
 
 In the first part the entire process was explained. In this
-post we are going to do some coding on the client-side, in this case JavaScript.
+post we are going to do some coding on the front-end-side, in this case JavaScript.
 
 But keep in mind that the same principles apply to all programming languages.
 Input validation is not only about security. It is also about building
@@ -171,7 +171,7 @@ requirements of the input data.
 * **Personal website**, Optional, Must validate as a proper URL, Only http and https is allowed
 
 Very basic values of course, but good enough for the example throughout the
-client-side and server-side input validation coding. It is very important to
+front-end-side and back-end-side input validation coding. It is very important to
 first sit down with your co-workers about the requirements of the data, before
 actually start coding.
 
@@ -193,12 +193,9 @@ required.
 
 All steps will be explained in the code examples.
 
-If you want to go right away to a full example file, go to my gist: 
-[https://gist.github.com/teusink/132d52260f81ab55baa9]
-
 ### 2.3 HTML First
 
-On the client-side this step is not needed, but it might come in handy when you
+On the front-end-side this step is not needed, but it might come in handy when you
 are building user-friendly (intuitive) applications. So lets start with the
 forms itself.
 
@@ -211,265 +208,12 @@ You don’t need to worry about older browsers, as they gracefully degrade to
 normal text fields. Down-side of this is that some or all controls might not
 work anymore. So there will be still a need for JavaScript.
 
-**Example code client-side HTML**
-
-Also on Gist: https://gist.github.com/teusink/132d52260f81ab55baa9#file-form-html
-
-**form.html**
-```
-<body>
-	
-	<!--	In the example below you will see the use of:
-			- required (whether a field is required or not)
-			- maxlength (what the maximum size of the value may be)
-			- pattern (regular expression)
-			
-			These are basic checks concerning input validation, where
-			as the pattern is the most complex. Pattern is relatively new
-			and might not be supported on all browsers. Hence the extra
-			javascript checks that needs to be done also.
-	-->
-	
-	<p id="errorMessage"></p>
-	
-	<h1>Form for input values</h1>
-	
-	<form name="testForm" action="exampleserver.php" onsubmit="return validateForm()" method="post">
-	
-		<label for="nameField">Name *</label>
-		<input type="text" name="nameField" id="nameField" maxlength="50" placeholder="John Doe" pattern="^.{1,50}$" required>
-		<p>Full or partial name or nickname, maximum of 50 characters</p>
-		
-		<label for="emailField">Email address *</label>
-		<input type="email" name="emailField" id="emailField" maxlength="254" placeholder="john@doe.com" pattern="\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}\b" required>
-		<p>Must be in format of john@doe.com</p>
-		
-		<label for="passwordField">Password *</label>
-		<input type="password" name="passwordField" id="passwordField" maxlength="16" pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s).{8,16}$" required>
-		<p>Requires at least one lower and one upper case letter, one digit, no spaces and a length of 8 to 16</p>
-		
-		<label for="repeatPasswordField">Password *</label>
-		<input type="password" name="repeatPasswordField" id="repeatPasswordField" maxlength="16" pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s).{8,16}$" required>
-		<p>Must be the same password as the one typed above</p>
-		
-		<label for="dateField">Birthdate</label>
-		<input type="date" name="dateField" id="dateField" maxlength="10" placeholder="2000/12/31" pattern="^(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$">
-		<p>Must be in format of mm/dd/yyyy</p>
-		
-		<label for="urlField">Personal website</label>
-		<input type="url" name="urlField" id="urlField" maxlength="254" placeholder="http://www.johndoe.com" pattern="(^http://.{7,254})|(^https://.{7,254})">
-		<p>URL most start with http:// or https://</p>
-		
-		<input type="submit" value="Submit">
-		
-		<p>All fields with an asterisk (*) are required</p>
-	
-	</form>
-
-</body>
-```
-
-### 2.4 JavaScript Second
-
-Before submitting the data from the form to the webserver it is key to validate
-it on the client-side first. This due to the various layers of defense. There is
-the form validation, there is the JavaScript validation and there will be the
-PHP (server sided) validation. You may not skip JavaScript if you think a
-browser will support the new form elements. Always include this step.
-
-**Example code client-side JavaScript**
-
-Also on Gist: https://gist.github.com/teusink/132d52260f81ab55baa9#file-javascript-js
-
-**javascript.js**
-```
-function validateForm() {
-	/*	Step 1: Check if the input is actually sent and received
-			This step is only done when sending data from the client to the server.
-			So it holds no relevance here.
-		
-		Step 2: Store input in memory, separate it from the source
-			Here we store all input in variables.
-	*/
-	var nameField = document.forms["testForm"]["nameField"].value,
-		emailField = document.forms["testForm"]["emailField"].value,
-		passwordField = document.forms["testForm"]["passwordField"].value,
-		repeatPasswordField = document.forms["testForm"]["repeatPasswordField"].value,
-		dateField = document.forms["testForm"]["dateField"].value,
-		urlField = document.forms["testForm"]["urlField"].value,
-		// To modify the error message on screen
-		formError = true,
-		errorMessage = document.getElementById("errorMessage"),
-		
-		/*	In the patterns below we check for the following steps.
-			
-			Step 3: Check variable for, and remove all scripting
-				Besides using regular expression, we do not check for scripting
-				here. For example, the nameField element is just being check
-				if it does not exceed the 50 characters limit.
-			
-			Step 4: Trim the variable
-				All regular expressions in this example have size limits.
-			
-			Step 5: Truncate the variable to the maximum size of expected value
-				We do not use this step here. When the variable is to long, the
-				expression will fail and return an error.
-			
-			Step  6: Check if it is the correct variable type and/or format
-				This step is done here (correct date, email and url format)
-		*/
-		namePattern = new RegExp(/^.{1,50}$/),
-		emailPattern = new RegExp(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}\b/),
-		passwordPattern = new RegExp(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s).{8,16}$/),
-		datePattern = new RegExp(/^(19|20)\d\d[- \/.](0[1-9]|1[012])[- \/.](0[1-9]|[12][0-9]|3[01])$/),
-		urlPattern = new RegExp(/(^http:\/\/.{7,254})|(^https:\/\/.{7,254})/);
-	
-	errorMessage.innerHTML = "";
-	/* In this step we are going to get all the values from the forms.
-		We are going to test if there is content in them,
-		and in case of the required fields, we are going to require
-		the input.
-	*/
-	if (nameField === null || nameField === "" ||
-			emailField === null || emailField === "" ||
-			passwordField === null || passwordField === "" ||
-			repeatPasswordField === null || repeatPasswordField === "") {
-		errorMessage.innerHTML = "Not all required fields are filled in!";
-		formError = false;
-		
-	} else {
-		/*	Here we actually check if all input values matches the patterns
-			and if the passwords are equal to each other or not.
-		*/
-		if (namePattern.test(nameField) !== true &&
-				emailPattern.test(emailField) !== true &&
-				passwordPattern.test(passwordField) !== true &&
-				passwordPattern.test(repeatPasswordField) !== true &&
-				(datePattern.test(dateField) !== true || dateField === null || dateField === "") &&
-				(urlPattern.test(urlField) !== true || urlField === null || urlField === "") &&
-				passwordField === repeatPasswordField) {
-				
-			errorMessage.innerHTML = "Not all fields are filled out correctly!";
-			formError = false;
-		} else {
-			errorMessage.innerHTML = "All fields are filled in correctly";
-			formError = true;
-		}
-		/*	
-			Step 7: Check if it is expected content (also called white listing)
-				This is not done in this example.
-				
-			Step 8: When relevant, check existence of local resources
-				This is not done in this example (not relevant).
-		*/
-	}
-	/*	Step 9: And now is it input for the process
-			When formError becomes true, then all checks are done
-			and the outcome is valid. The input values are now
-			send to the server.
-	*/
-	return formError;
-}
-```
-
-### 2.5 HTML and JavaScript combined
-
-Also on Gist: https://gist.github.com/teusink/132d52260f81ab55baa9#file-exampleclient-html
-
-**exampleclient.html**
+**HTML**
 ```
 <html>
 <head>
-<title>Input validation for web-applications, how to process input safely and securely</title>
-<script>
-function validateForm() {
-	/*	Step 1: Check if the input is actually sent and received
-			This step is only done when sending data from the client to the server.
-			So it holds no relevance here.
-		
-		Step 2: Store input in memory, separate it from the source
-			Here we store all input in variables.
-	*/
-	var nameField = document.forms["testForm"]["nameField"].value,
-		emailField = document.forms["testForm"]["emailField"].value,
-		passwordField = document.forms["testForm"]["passwordField"].value,
-		repeatPasswordField = document.forms["testForm"]["repeatPasswordField"].value,
-		dateField = document.forms["testForm"]["dateField"].value,
-		urlField = document.forms["testForm"]["urlField"].value,
-		// To modify the error message on screen
-		formError = true,
-		errorMessage = document.getElementById("errorMessage"),
-		
-		/*	In the patterns below we check for the following steps.
-			
-			Step 3: Check variable for, and remove all scripting
-				Besides using regular expression, we do not check for scripting
-				here. For example, the nameField element is just being check
-				if it does not exceed the 50 characters limit.
-			
-			Step 4: Trim the variable
-				All regular expressions in this example have size limits.
-			
-			Step 5: Truncate the variable to the maximum size of expected value
-				We do not use this step here. When the variable is to long, the
-				expression will fail and return an error.
-			
-			Step  6: Check if it is the correct variable type and/or format
-				This step is done here (correct date, email and url format)
-		*/
-		namePattern = new RegExp(/^.{1,50}$/),
-		emailPattern = new RegExp(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}\b/),
-		passwordPattern = new RegExp(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s).{8,16}$/),
-		datePattern = new RegExp(/^(19|20)\d\d[- \/.](0[1-9]|1[012])[- \/.](0[1-9]|[12][0-9]|3[01])$/),
-		urlPattern = new RegExp(/(^http:\/\/.{7,254})|(^https:\/\/.{7,254})/);
-	
-	errorMessage.innerHTML = "";
-	/* In this step we are going to get all the values from the forms.
-		We are going to test if there is content in them,
-		and in case of the required fields, we are going to require
-		the input.
-	*/
-	if (nameField === null || nameField === "" ||
-			emailField === null || emailField === "" ||
-			passwordField === null || passwordField === "" ||
-			repeatPasswordField === null || repeatPasswordField === "") {
-		errorMessage.innerHTML = "Not all required fields are filled in!";
-		formError = false;
-		
-	} else {
-		/*	Here we actually check if all input values matches the patterns
-			and if the passwords are equal to each other or not.
-		*/
-		if (namePattern.test(nameField) !== true &&
-				emailPattern.test(emailField) !== true &&
-				passwordPattern.test(passwordField) !== true &&
-				passwordPattern.test(repeatPasswordField) !== true &&
-				(datePattern.test(dateField) !== true || dateField === null || dateField === "") &&
-				(urlPattern.test(urlField) !== true || urlField === null || urlField === "") &&
-				passwordField === repeatPasswordField) {
-				
-			errorMessage.innerHTML = "Not all fields are filled out correctly!";
-			formError = false;
-		} else {
-			errorMessage.innerHTML = "All fields are filled in correctly";
-			formError = true;
-		}
-		/*	
-			Step 7: Check if it is expected content (also called white listing)
-				This is not done in this example.
-				
-			Step 8: When relevant, check existence of local resources
-				This is not done in this example (not relevant).
-		*/
-	}
-	/*	Step 9: And now is it input for the process
-			When formError becomes true, then all checks are done
-			and the outcome is valid. The input values are now
-			send to the server.
-	*/
-	return formError;
-}
-</script>
+	<title>Input validation for web-applications, how to process input safely and securely</title>
+	<script><!-- Javascript here --></script>
 </head>
 <body>
 	
@@ -488,7 +232,7 @@ function validateForm() {
 	
 	<h1>Form for input values</h1>
 	
-	<form name="testForm" action="exampleserver.php" onsubmit="return validateForm()" method="post">
+	<form name="testForm" action="example-back-end.php" onsubmit="return validateForm()" method="post">
 	
 		<label for="nameField">Name *</label>
 		<input type="text" name="nameField" id="nameField" maxlength="50" placeholder="John Doe" pattern="^.{1,50}$" required>
@@ -524,17 +268,106 @@ function validateForm() {
 </html>
 ```
 
-### 2.6 Disclaimer concerning the code
+### 2.4 JavaScript Second
 
-Please be aware that the code is merely an example to show what can be done to
-do input validation and it is not ready for production environments. Chances are
-that the regular expressions can be improved and other code might as well.
+Before submitting the data from the form to the webserver it is key to validate
+it on the front-end-side first. This due to the various layers of defense. There is
+the form validation, there is the JavaScript validation and there will be the
+PHP (back-end sided) validation. You may not skip JavaScript if you think a
+browser will support the new form elements. Always include this step.
 
-Always make sure that you follow the requirements of your applications and
-incorporate the security in its design. From there you can implement all the
-input validation you need for the best security of your application.
+**Javascript**
+```
+function validateForm() {
+	/*	Step 1: Check if the input is actually sent and received
+			This step is only done when sending data from the front-end to the back-end.
+			So it holds no relevance here.
+		
+		Step 2: Store input in memory, separate it from the source
+			Here we store all input in variables.
+	*/
+	var nameField = document.forms["testForm"]["nameField"].value,
+		emailField = document.forms["testForm"]["emailField"].value,
+		passwordField = document.forms["testForm"]["passwordField"].value,
+		repeatPasswordField = document.forms["testForm"]["repeatPasswordField"].value,
+		dateField = document.forms["testForm"]["dateField"].value,
+		urlField = document.forms["testForm"]["urlField"].value,
+		// To modify the error message on screen
+		formError = true,
+		errorMessage = document.getElementById("errorMessage"),
+		
+		/*	In the patterns below we check for the following steps.
+			
+			Step 3: Check variable for, and remove all scripting
+				Besides using regular expression, we do not check for scripting
+				here. For example, the nameField element is just being check
+				if it does not exceed the 50 characters limit.
+			
+			Step 4: Trim the variable
+				All regular expressions in this example have size limits.
+			
+			Step 5: Truncate the variable to the maximum size of expected value
+				We do not use this step here. When the variable is to long, the
+				expression will fail and return an error.
+			
+			Step  6: Check if it is the correct variable type and/or format
+				This step is done here (correct date, email and url format)
+		*/
+		namePattern = new RegExp(/^.{1,50}$/),
+		emailPattern = new RegExp(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}\b/),
+		passwordPattern = new RegExp(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s).{8,16}$/),
+		datePattern = new RegExp(/^(19|20)\d\d[- \/.](0[1-9]|1[012])[- \/.](0[1-9]|[12][0-9]|3[01])$/),
+		urlPattern = new RegExp(/(^http:\/\/.{7,254})|(^https:\/\/.{7,254})/);
+	
+	errorMessage.innerHTML = "";
+	/* In this step we are going to get all the values from the forms.
+		We are going to test if there is content in them,
+		and in case of the required fields, we are going to require
+		the input.
+	*/
+	if (nameField === null || nameField === "" ||
+			emailField === null || emailField === "" ||
+			passwordField === null || passwordField === "" ||
+			repeatPasswordField === null || repeatPasswordField === "") {
+		errorMessage.innerHTML = "Not all required fields are filled in!";
+		formError = false;
+		
+	} else {
+		/*	Here we actually check if all input values matches the patterns
+			and if the passwords are equal to each other or not.
+		*/
+		if (namePattern.test(nameField) !== true &&
+				emailPattern.test(emailField) !== true &&
+				passwordPattern.test(passwordField) !== true &&
+				passwordPattern.test(repeatPasswordField) !== true &&
+				(datePattern.test(dateField) !== true || dateField === null || dateField === "") &&
+				(urlPattern.test(urlField) !== true || urlField === null || urlField === "") &&
+				passwordField === repeatPasswordField) {
+				
+			errorMessage.innerHTML = "Not all fields are filled out correctly!";
+			formError = false;
+		} else {
+			errorMessage.innerHTML = "All fields are filled in correctly";
+			formError = true;
+		}
+		/*	
+			Step 7: Check if it is expected content (also called white listing)
+				This is not done in this example.
+				
+			Step 8: When relevant, check existence of local resources
+				This is not done in this example (not relevant).
+		*/
+	}
+	/*	Step 9: And now is it input for the process
+			When formError becomes true, then all checks are done
+			and the outcome is valid. The input values are now
+			send to the server.
+	*/
+	return formError;
+}
+```
 
-### 2.6 Sources
+### 2.5 Sources
 
 Here are a couple of informative and useful sources you might want to check out.
 
@@ -547,10 +380,10 @@ Here are a couple of informative and useful sources you might want to check out.
 
 *****
 
-## 3. Server-side
+## 3. Back-end-side
 
 In the first part the entire process was explained. In the second part we did
-some coding on the client-side, and now we will look in to server-side coding in
+some coding on the front-end-side, and now we will look in to back-end-side coding in
 PHP. But keep in mind that the same principles apply to all programming
 languages. Input validation is not only about security. It is also about
 building user-friendly applications (a message when the data-entry does not
@@ -578,22 +411,18 @@ required.
 1.  When relevant, check existence of local resources
 1.  And now is it input for the process
 
-### 3.2 Server-sided PHP
+### 3.2 Back-end PHP
 
-The server-sided code for input validation can be found below. In this situation
+The back-end-sided code for input validation can be found below. In this situation
 we use PHP and I will show two kinds of examples. One is the input validation
 only and the other is input validation and sanitation. Keep in mind with
-sanitation that when done on the server-side, you probably need it also on the
-client-side (there is no point doing server-side only, as the user will face
-input validation errors by the client-side validation).
+sanitation that when done on the back-end-side, you probably need it also on the
+front-end-side (there is no point doing back-end-side only, as the user will face
+input validation errors by the front-end-side validation).
 
 That being said, all steps are explained in the code itself.
 
-**Example code server-side PHP**
-
-Also on Gist: https://gist.github.com/teusink/132d52260f81ab55baa9#file-exampleserver-php
-
-**exampleserver.php**
+**PHP**
 ```
 <html>
 <head>
@@ -756,32 +585,7 @@ if (isset($_POST['nameField']) &&
 </html>
 ```
 
-### 3.4 All done now…
-
-Happy days! You passed all tests and can assume that the input is validated,
-sanitized and safe to send it to the database, files or other storage or
-processing locations.
-
-That’s about it for the input validation process, client-side execution and
-server-side execution. Please bare in mind to never ever trust (user) input and
-always process it appropriately. The most common vulnerabilities are due to
-improper input validation.
-
-I hope you like the set of posts on this topic and thank you for reading my
-blog!
-
-### 3.5 Disclaimer concerning the code
-
-Please be aware that the code above is merely an example to show what can be
-done to do input validation and it is not ready for production environments.
-Chances are that the regular expressions can be improved and other code might as
-well.
-
-Always make sure that you follow the requirements of your applications and
-incorporate the security in its design. From there you can implement all the
-input validation you need for the best security of your application.
-
-### 3.6 Sources
+### 3.3 Sources
 
 Here are a couple of informative and useful sources you might want to check out.
 
@@ -799,5 +603,39 @@ Here are a couple of informative and useful sources you might want to check out.
 * RegExLib.com Cheat Sheet:
 [http://regexlib.com/CheatSheet.aspx](http://regexlib.com/CheatSheet.aspx)
 * RegExLib.com: [http://regexlib.com/](http://regexlib.com/)
+
+## 4. All done now…
+
+Happy days! You passed all tests and can assume that the input is validated,
+sanitized and safe to send it to the database, files or other storage or
+processing locations.
+
+That’s about it for the input validation process, front-end-side execution and
+back-end-side execution. Please bare in mind to never ever trust (user) input and
+always process it appropriately. The most common vulnerabilities are due to
+improper input validation.
+
+I hope you like the set of posts on this topic and thank you for reading my
+blog!
+
+### 4.1 Full example code front-end-side
+
+https://github.com/teusink/Security-Frameworks-and-Models/blob/master/Input-Validation-for-Web-apps/example-front-end.html
+
+### 4.2 Full example code front-end-side
+
+https://github.com/teusink/Security-Frameworks-and-Models/blob/master/Input-Validation-for-Web-apps/example-back-end.php
+
+### 4.3 Disclaimer
+
+Please be aware that the code is merely an example to show what could be done to
+do input validation and it is not ready for production environments. Chances are
+that the regular expressions can be improved and other code might as well.
+The code also has not been security tested for programming vulnerabilities,
+as well for any other issues in regard to continuity and integrity.
+
+Always make sure that you follow the requirements of your applications and
+incorporate the security in its design. From there you can implement all the
+input validation you need for the best security of your application.
 
 *****
