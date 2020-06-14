@@ -86,7 +86,7 @@ right format. Do you only expect a numeric value? Or do you expect a string? But
 also consider date-formats, URLs, and email addresses. This is the place to
 check for it. When incorrect you can either drop the input or convert it
 (sanitizing) to the proper type.
-1.  **Check if it is expected content (also called white listing)**<br> This is an
+1.  **Check if it is expected content (also called allowlisting)**<br> This is an
 important and probably most difficult step to work out in the code when handling
 specific data. For example, in some cases you might expect an URL which always
 precedes with “https://www.google.com/". So when you have received and processed
@@ -187,7 +187,7 @@ required.
 1.  Trim the variable
 1.  Truncate the variable to the maximum size of expected value
 1.  Check if it is the correct variable type and / or format
-1.  Check if it is expected content (also called white listing)
+1.  Check if it is expected content (also called allowlisting)
 1.  When relevant, check existence of local resources
 1.  And now is it input for the process
 
@@ -351,7 +351,7 @@ function validateForm() {
 			formError = true;
 		}
 		/*	
-			Step 7: Check if it is expected content (also called white listing)
+			Step 7: Check if it is expected content (also called allowlisting)
 				This is not done in this example.
 				
 			Step 8: When relevant, check existence of local resources
@@ -407,7 +407,7 @@ required.
 1.  Trim the variable
 1.  Truncate the variable to the maximum size of expected value
 1.  Check if it is the correct variable type and / or format
-1.  Check if it is expected content (also called white listing)
+1.  Check if it is expected content (also called allowlisting)
 1.  When relevant, check existence of local resources
 1.  And now is it input for the process
 
@@ -555,7 +555,7 @@ if (isset($_POST['nameField']) &&
 		$urlField = filter_var($urlField, FILTER_SANITIZE_URL);
 		
 		/*
-			Step 7: Check if it is expected content (also called white listing)
+			Step 7: Check if it is expected content (also called allowlisting)
 				Not relevant in this example.
 				
 			Step 8: When relevant, check existence of local resources
