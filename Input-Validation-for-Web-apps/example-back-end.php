@@ -24,7 +24,6 @@ function strip_html_tags($text) {
 			'@<noframes[^>]*?.*?</noframes>@siu',
 			'@<noscript[^>]*?.*?</noscript>@siu',
 			'@<noembed[^>]*?.*?</noembed>@siu',
-
 			// Add line breaks before & after blocks
 			'@<((br)|(hr))@iu',
 			'@</?((address)|(blockquote)|(center)|(del))@iu',
@@ -41,9 +40,10 @@ function strip_html_tags($text) {
 			"\n\$0", "\n\$0",
 		),
 		$text);
-
 	// Remove all remaining tags and comments and return.
-	return strip_tags($text);
+	$text = strip_tags($text);
+	$text = htmlspecialchars($text);
+	return $text;
 }
 
 // Function to truncate input to a maximum number of chars
